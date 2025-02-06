@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game - Battleship Mock Game</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #1a1a1a;
+      color: #fff;
+      font-family: 'Arial', sans-serif;
+    }
+    header {
+      background-color: #333;
+      padding: 10px 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style-type: none;
+      gap: 25px;
+      padding: 0;
+    }
+    nav a {
+      color: #00bfff;
+      text-decoration: none;
+      font-size: 1.1em;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #fff;
+    }
+    nav a.active {
+      color: #fff;
+      background-color: #00bfff;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+    main {
+      padding-top: 80px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      font-size: 2.5em;
+      margin-bottom: 30px;
+    }
+    h2 {
+      text-align: center;
+      color: #00bfff;
+      margin: 0 0 20px;
+      font-size: 1.5em;
+    }
+
+    .boards-container {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding: 20px;
+      flex-wrap: wrap;
+    }
+    .board-wrapper {
+      background: rgba(0,191,255,0.05);
+      border: 2px solid rgba(0,191,255,0.1);
+      border-radius: 8px;
+      padding: 15px;
+      box-shadow: 0 0 20px rgba(0,191,255,0.1);
+    }
+
+    .game-board {
+      border-collapse: collapse;
+      margin: 0 auto;
+    }
+    .game-board th,
+    .game-board td {
+      width: 35px;
+      height: 35px;
+      border: 1px solid rgba(0,191,255,0.2);
+      text-align: center;
+      vertical-align: middle;
+      position: relative;
+    }
+    .game-board th {
+      background-color: rgba(51,51,51,0.8);
+      color: #00bfff;
+      font-weight: normal;
+      padding: 5px;
+    }
+
+    .tile {
+      background-color: rgba(68,68,68,0.3);
+      transition: all 0.2s ease;
+    }
+    .tile:hover {
+      background-color: rgba(0,191,255,0.1);
+      transform: scale(1.1);
+
+      box-shadow: 0 0 12px 2px #00bfff, 0 0 20px 4px rgba(0,191,255,0.5);
+      z-index: 1;
+    }
+    .hit { background-color: rgba(0,255,0,0.1); }
+    .miss { background-color: rgba(255,0,0,0.1); }
+    .ship { background-color: rgba(0,0,0,0.3); }
+    .hit i, .miss i, .ship i {
+      font-size: 1.2em;
+    }
+
+    .game-controls {
+      text-align: center;
+      margin: 30px 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      align-items: center;
+    }
+    .timer {
+      font-size: 1.2em;
+      color: #00bfff;
+    }
+    .restart-btn {
+      padding: 8px 25px;
+      background-color: #00bfff;
+      color: #1a1a1a;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .restart-btn:hover {
+      background-color: #009acd;
+    }
+    @media (max-width: 1200px) {
+      .boards-container { gap: 20px; }
+      .game-board th, .game-board td { width: 30px; height: 30px; }
+    }
+    @media (max-width: 768px) {
+      .board-wrapper { width: 95%; overflow-x: auto; }
+      .game-board { font-size: 0.9em; }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <nav>
+    <ul>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="index.html" class="active">Game</a></li>
+      <li><a href="../rule/">Rules</a></li>
+      <li><a href="../score/">High Scores</a></li>
+    </ul>
+  </nav>
+</header>
+<main>
+  <h1>Game in Progress</h1>
+  <div class="boards-container">
+
+    <div class="board-wrapper">
+      <h2>Enemy Board</h2>
+      <table class="game-board">
+        <thead>
+        <tr>
+          <th></th>
+          <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th>
+          <th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr>
+          <th>A</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile hit"><i class="fas fa-check" style="color:green;"></i></td>
+          <td class="tile hit"><i class="fas fa-check" style="color:green;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile miss"><i class="fas fa-times" style="color:red;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>B</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile hit"><i class="fas fa-check" style="color:green;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>C</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>D</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile miss"><i class="fas fa-times" style="color:red;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>E</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>F</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile hit"><i class="fas fa-check" style="color:green;"></i></td>
+          <td class="tile hit"><i class="fas fa-check" style="color:green;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>G</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile miss"><i class="fas fa-times" style="color:red;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>H</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>I</th>
+          <td class="tile"></td>
+          <td class="tile miss"><i class="fas fa-times" style="color:red;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>J</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile miss"><i class="fas fa-times" style="color:red;"></i></td>
+          <td class="tile"></td>
+          <td class="tile miss"><i class="fas fa-times" style="color:red;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>K</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile miss"><i class="fas fa-times" style="color:red;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile hit"><i class="fas fa-check" style="color:green;"></i></td>
+          <td class="tile hit"><i class="fas fa-check" style="color:green;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>L</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>M</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile miss"><i class="fas fa-times" style="color:red;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>N</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="board-wrapper">
+      <h2>Player Board</h2>
+      <table class="game-board">
+        <thead>
+        <tr>
+          <th></th>
+          <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th>
+          <th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th>A</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile miss"><i class="fas fa-times" style="color:red;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>B</th>
+          <td class="tile"></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>C</th>
+          <td class="tile"></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>D</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile miss"><i class="fas fa-times" style="color:red;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>E</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>F</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>G</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>H</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>I</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>J</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>K</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile"></td>
+          <td class="tile miss"><i class="fas fa-times" style="color:red;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>L</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>M</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile ship"><i class="fas fa-circle" style="color:black;"></i></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        <tr>
+          <th>N</th>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+          <td class="tile"></td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="game-controls">
+    <div class="timer"><i class="fas fa-clock"></i> Time: <span>00:01:00</span></div>
+    <button class="restart-btn"><i class="fas fa-redo"></i> Restart</button>
+  </div>
+</main>
+</body>
+</html>

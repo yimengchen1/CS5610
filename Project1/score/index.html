@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>High Scores - Battleship Mock Game</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: #1a1a1a; color: #fff; font-family: 'Arial', sans-serif; }
+    header {
+      background-color: #333;
+      padding: 10px 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style-type: none;
+      gap: 25px;
+      padding: 0;
+    }
+    nav a {
+      color: #00bfff;
+      text-decoration: none;
+      font-size: 1.1em;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #fff;
+    }
+
+    nav a.active {
+      color: #fff;
+      background-color: #00bfff;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+
+    main {
+      padding-top: 80px;
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 30px;
+    }
+    .scores-table {
+      width: 80%;
+      margin: 30px auto;
+      border-collapse: collapse;
+      background: rgba(51,51,51,0.9);
+    }
+    .scores-table th,
+    .scores-table td {
+      padding: 12px;
+      border: 1px solid #00bfff;
+      text-align: center;
+    }
+    .scores-table th {
+      background-color: #333;
+      color: #00bfff;
+    }
+    .scores-table tr:hover {
+      background: rgba(0,191,255,0.1);
+    }
+  </style>
+</head>
+<body>
+<header>
+  <nav>
+    <ul>
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../game/">Game</a></li>
+      <li><a href="../rule/">Rules</a></li>
+      <li><a href="index.html" class="active">High Scores</a></li>
+    </ul>
+  </nav>
+</header>
+<main>
+  <h1>High Scores</h1>
+  <table class="scores-table">
+    <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Player</th>
+      <th>Wins</th>
+      <th>Losses</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>1</td>
+      <td>Alba</td>
+      <td>42</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Yeji</td>
+      <td>38</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Yuna</td>
+      <td>35</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Iga</td>
+      <td>32</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Ophelia</td>
+      <td>30</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Yujin</td>
+      <td>28</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Ally</td>
+      <td>26</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Karina</td>
+      <td>25</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Minji</td>
+      <td>23</td>
+      <td>16</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>Hanni</td>
+      <td>22</td>
+      <td>18</td>
+    </tr>
+    </tbody>
+  </table>
+</main>
+</body>
+</html>
