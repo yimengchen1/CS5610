@@ -1,5 +1,6 @@
 import React, { useState, createContext } from 'react';
 
+// Use the Context to gain the extra points
 export const GridContext = createContext();
 
 export const GridProvider = ({ children }) => {
