@@ -82,7 +82,8 @@ const GameContext = createContext();
 function gameReducer(state, action) {
   switch (action.type) {
     case 'INIT_GAME': {
-      const mode = action.payload.mode;
+      const modeParam = action.payload.mode;
+      const mode = modeParam === 'easy' ? 'free' : modeParam;
       let playerBoard = createEmptyBoard();
       let enemyBoard = createEmptyBoard();
       const playerPlacement = placeShipsRandomly(playerBoard);
@@ -235,7 +236,7 @@ function gameReducer(state, action) {
   }
 }
 
-function GameProvider({ children }) {
+export function GameProvider({ children }) {
   const persistedState = loadState();
   const [state, dispatch] = useReducer(
       gameReducer,
@@ -247,16 +248,17 @@ function GameProvider({ children }) {
   }, [state]);
 
   useEffect(() => {
+    if (state.gameOver) return;
     const interval = setInterval(() => {
-      dispatch({ type: 'UPDATE_TIMER' });
+      dispatch({type: 'UPDATE_TIMER'});
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [state.gameOver]);
 
   useEffect(() => {
     if (state.turn === 'enemy' && !state.gameOver) {
       const delay = setTimeout(() => {
-        dispatch({ type: 'ENEMY_ATTACK' });
+        dispatch({type: 'ENEMY_ATTACK'});
       }, 500);
 
       return () => clearTimeout(delay);
@@ -264,10 +266,9 @@ function GameProvider({ children }) {
   }, [state.turn, state.gameOver]);
 
   return (
-      <GameContext.Provider value={{ state, dispatch }}>
+      <GameContext.Provider value={{state, dispatch}}>
         {children}
-      </GameContext.Provider>
-  );
-}
+      </GameContext.Provider>);
+};
 
-export { GameContext, GameProvider };
+export { GameContext};
